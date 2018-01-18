@@ -17,7 +17,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     var txtResult = UILabel()
     var percentValue = UILabel()
-    
+    var flashToggle = UIButton()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,12 +84,30 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 self.percentValue.layer.borderWidth = 2
                 self.percentValue.layer.cornerRadius = 18
                 
+                self.flashToggle.frame = CGRect(x: 300, y: 60, width: 100, height: 70)
+                self.flashToggle.backgroundColor = UIColor.red
+                self.flashToggle.layer.masksToBounds = true
+                self.flashToggle.layer.borderWidth = 2
+                self.flashToggle.layer.cornerRadius = 18
+                
                 self.view.addSubview(self.txtResult)
                 self.view.addSubview(self.percentValue)
+                self.view.addSubview(self.flashToggle)
+                self.toggleFlash()
             }
         }
         
         try? VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: [:]).perform([request])
+    }
+    func toggleFlash() {
+        let device = AVCaptureDevice.default(for: AVMediaType.video)
+        if (device?.hasTorch)! {
+            try? device?.lockForConfiguration()
+            let torchOn = !(device?.isTorchActive)!
+            try? device?.setTorchModeOn(level: 1.0)
+            device?.torchMode = torchOn ? AVCaptureDevice.TorchMode.on : AVCaptureDevice.TorchMode.off
+            device?.unlockForConfiguration()
+        }
     }
 }
 
