@@ -84,8 +84,10 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 self.percentValue.layer.borderWidth = 2
                 self.percentValue.layer.cornerRadius = 18
                 
-                self.flashToggle.frame = CGRect(x: 300, y: 60, width: 100, height: 70)
+                self.flashToggle.frame = CGRect(x: 140, y: 700, width: 100, height: 70)
                 self.flashToggle.backgroundColor = UIColor.red
+                self.flashToggle.setTitle("Flashlight", for: .normal)
+                self.flashToggle.addTarget(self, action: #selector(self.flashButtonAction), for: .touchUpInside)
                 self.flashToggle.layer.masksToBounds = true
                 self.flashToggle.layer.borderWidth = 2
                 self.flashToggle.layer.cornerRadius = 18
@@ -93,12 +95,15 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 self.view.addSubview(self.txtResult)
                 self.view.addSubview(self.percentValue)
                 self.view.addSubview(self.flashToggle)
-                self.toggleFlash()
             }
         }
         
         try? VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: [:]).perform([request])
     }
+    @objc func flashButtonAction(sender: UIButton!) {
+        toggleFlash()
+    }
+    
     func toggleFlash() {
         let device = AVCaptureDevice.default(for: AVMediaType.video)
         if (device?.hasTorch)! {
